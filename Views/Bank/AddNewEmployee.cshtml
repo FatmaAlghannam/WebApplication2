@@ -1,0 +1,10 @@
+﻿@model Employee
+AddNewEmployee
+<body>
+    @using (Html.BeginForm("AddNewEmployee", "Bank", FormMethod.Post))
+    {
+        @Html.EditorForModel()
+        <button type="submit" class="btn btn-outline-secondary"> Save</button>
+
+    }
+</body>

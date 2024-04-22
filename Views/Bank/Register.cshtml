@@ -1,0 +1,10 @@
+﻿@model BankBranches
+Register
+<body>
+    @using (Html.BeginForm("Register", "Bank", FormMethod.Post))
+    {
+        @Html.EditorForModel()
+        <button type="submit" class="btn btn-outline-secondary"> Save</button>
+
+    }
+</body>

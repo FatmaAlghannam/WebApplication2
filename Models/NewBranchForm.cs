@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication2.Models
 {
@@ -11,6 +12,7 @@ namespace WebApplication2.Models
 
         [RegularExpression("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&=]*)\r\n")]
         public string LocationURL { get; set; }
+        public int EmployeeCount { get; set; }
 
 
 

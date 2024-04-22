@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿//using AspNetCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using WebApplication2.Migrations;
 using WebApplication2.Models;
 
 namespace WebApplication2.Controllers
@@ -46,7 +50,7 @@ namespace WebApplication2.Controllers
 
         }
 
-       // [HttpPost]
+        // [HttpPost]
         //     public IActionResult Create(NewBranchForm model)
         //{
         //    if (ModelState.IsValid)
@@ -80,43 +84,125 @@ namespace WebApplication2.Controllers
         //}
 
 
-             [HttpGet]
-             public IActionResult Register()
-            {
-                return View();
-            }
-
-             [HttpPost]
-             public IActionResult Register(NewBranchForm form)
-            {
-
-                var locationname = form.LocationName;
-                var branchmanger = form.Branchmanger;
-                var locationUrl = form.LocationURL;
-                var id = form.Id;
-            
-
-                
-
-            {
-                    return View(Index);
-                }
-            }
-             public IActionResult Details(int id)
+        [HttpGet]
+        public IActionResult Register()
         {
-            var bankBranch = branchlist.SingleOrDefault(b => b.Id == id);
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Register(NewBranchForm form)
+        {
+
+            var locationname = form.LocationName;
+            var branchmanger = form.Branchmanger;
+            var locationUrl = form.LocationURL;
+            var id = form.Id;
+            var employeeCount = form.EmployeeCount;
+
+
+            var newBank = new BankBranches();
+            newBank.LocationName = locationname;
+            newBank.LocationURL = locationUrl;
+            newBank.Branchmanger = branchmanger;
+            newBank.EmployeeCount = employeeCount;
+
+            var DbContext = new BankContext();
+            DbContext.BankBranches.Add(newBank);
+            DbContext.SaveChanges();
+
+
+            return RedirectToAction("Index");
+
+        }
+
+        public IActionResult Details(int id)
+        {
+            var db = new BankContext();
+            var bankBranches = db.BankBranches.SingleOrDefault(b => b.Id == id);
+            //var bankBranch = branchlist.SingleOrDefault(b => b.Id == id);
+            if (bankBranches == null)
+            {
+                return RedirectToAction("Index");
+            }
+            return View(bankBranches);
+
+        }
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var db = new BankContext();
+            var bankBranch = db.BankBranches.Find(id);
             if (bankBranch == null)
             {
                 return RedirectToAction("Index");
             }
-            return View(bankBranch);
+            var myForm = new NewBranchForm();
+            myForm.LocationName = bankBranch.LocationName;
+            myForm.LocationURL = bankBranch.LocationURL;
+            myForm.Branchmanger = bankBranch.Branchmanger;
+            myForm.EmployeeCount = bankBranch.EmployeeCount;
+
+            return View(myForm);
+
+
+
+
 
         }
+        [HttpPost]
+        public IActionResult Edit(int id, NewBranchForm form)
+        {
+            if (ModelState.IsValid)
+            {
 
-       
-            
+                var db = new BankContext();
+                var bankBranch = db.BankBranches.Find(id);
+                bankBranch.LocationName = form.LocationName;
+                bankBranch.LocationURL = form.LocationURL;
+                bankBranch.Branchmanger = form.Branchmanger;
+                bankBranch.EmployeeCount = form.EmployeeCount;
+
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return this.View();
         }
+
+
+        [HttpGet]
+        public IActionResult AddNewEmployee(int id)
+        {
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddNewEmployee(int id, AddNewEmployee form)
+        {
+            if (!ModelState.IsValid)
+            {
+                var db = new BankContext();
+                var bankBranches = db.BankBranches.Include(r => r.Employees).SingleOrDefault(v=> v.Id == id);
+                var newEmployee = new Employee();
+
+
+                newEmployee.Name = form.Name;
+                newEmployee.Position = form.Position;
+                newEmployee.CivilID = form.CivilID;
+                bankBranches.Employees.Add(newEmployee);
+
+                db.SaveChanges();
+
+            }
+            return RedirectToAction("Views_Bank_Thanks");
+        }
+
+
+
     }
+}
+    
     
 
 
