@@ -10,6 +10,13 @@ namespace WebApplication2.Controllers
 
     public class BankController : Controller
     {
+        private readonly BankContext _bankContext;
+        // NEW code _bankContext is the injection :we place it all in >
+        public BankController(BankContext Context)
+        {
+            _bankContext = Context;
+        }
+
         private static List<BankBranches> branchlist = new List<BankBranches>()
     {
         new BankBranches{  LocationName =" Kaifan", Id = 1 , Branchmanger ="Abdulla", EmployeeCount = 75,LocationURL= "https://maps.app.goo.gl/i2xcu2BxyHR152iZ8"},
@@ -21,10 +28,22 @@ namespace WebApplication2.Controllers
 
         public IActionResult Index()
         {
-            using (var context = new BankContext())
+            using (_bankContext)
             {
-                var banks = context.BankBranches.ToList();
-                return View(banks);
+                var viewModel =new BankDashBoardViewModel();
+                viewModel.BranchList = _bankContext.BankBranches.ToList();
+                viewModel.TotalBranch = _bankContext.BankBranches.Count();
+                viewModel.TotalEmployee = _bankContext.BankBranches.Count();
+                //ecute siqul query :
+                viewModel.BranchWithMostEmployees = _bankContext.BankBranches
+                    .OrderByDescending(b => b.Employees.Count)
+                    .FirstOrDefault();
+
+
+                return View(viewModel);
+
+                //var banks = 
+                //return View(banks);
             }
             return View(branchlist);
         }
@@ -107,7 +126,7 @@ namespace WebApplication2.Controllers
             newBank.Branchmanger = branchmanger;
             newBank.EmployeeCount = employeeCount;
 
-            var DbContext = new BankContext();
+            var DbContext = _bankContext;
             DbContext.BankBranches.Add(newBank);
             DbContext.SaveChanges();
 
@@ -118,7 +137,7 @@ namespace WebApplication2.Controllers
 
         public IActionResult Details(int id)
         {
-            var db = new BankContext();
+            var db = _bankContext;
             var bankBranches = db.BankBranches.SingleOrDefault(b => b.Id == id);
             //var bankBranch = branchlist.SingleOrDefault(b => b.Id == id);
             if (bankBranches == null)
@@ -131,7 +150,7 @@ namespace WebApplication2.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var db = new BankContext();
+            var db = _bankContext;
             var bankBranch = db.BankBranches.Find(id);
             if (bankBranch == null)
             {
@@ -156,7 +175,7 @@ namespace WebApplication2.Controllers
             if (ModelState.IsValid)
             {
 
-                var db = new BankContext();
+                var db = _bankContext;
                 var bankBranch = db.BankBranches.Find(id);
                 bankBranch.LocationName = form.LocationName;
                 bankBranch.LocationURL = form.LocationURL;
@@ -182,7 +201,7 @@ namespace WebApplication2.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var db = new BankContext();
+                var db = _bankContext;
                 var bankBranches = db.BankBranches.Include(r => r.Employees).SingleOrDefault(v=> v.Id == id);
                 var newEmployee = new Employee();
 
@@ -195,7 +214,7 @@ namespace WebApplication2.Controllers
                 db.SaveChanges();
 
             }
-            return RedirectToAction("Views_Bank_Thanks");
+            return View("Thanks");
         }
 
 

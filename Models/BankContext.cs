@@ -6,8 +6,9 @@ namespace WebApplication2.Models
     {
         public DbSet<BankBranches> BankBranches { get; set; }
 
+        public BankContext(DbContextOptions<BankContext> options) : base(options) { 
+        }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite("Data Source= bank.db");
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

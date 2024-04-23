@@ -10,7 +10,6 @@ namespace WebApplication2.Models
         public string Branchmanger { get; set; }
         public int EmployeeCount { get; set; }
         public List<Employee> Employees { get; set; }
-
     }
     //public class Employee
     //{

@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using WebApplication2.Models;
+
 namespace WebApplication2
 {
     public class Program
@@ -8,6 +11,10 @@ namespace WebApplication2
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            //Program.cs
+            builder.Services.AddDbContext<BankContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefualtConnection")));
+
 
             var app = builder.Build();
 
