@@ -1,10 +1,17 @@
 ﻿
             @model BankDashBoardViewModel
 
+
+
+  @inject IViewLocalizer local
+
+
+
+
 <div class="container-fluid">
     <div class="row">
         <div class="text-center">
-            <h1 class="display-4"> Bank Branches </h1>
+            <h1 class="display-4"> @local["Bank Branches:"] </h1>
         </div>
 
     </div>
@@ -12,7 +19,7 @@
     <div class="row pb-2">
         <div  class="col-3 offset-9">
             <div class="text-center">
-                <a href="/Bank/Register" class="btn btn-outline-secondary">New Branches</a>
+                <a href="/Bank/Register" class="btn btn-outline-secondary">@local["New Branch"]</a>
             </div>
 
         </div>
@@ -24,9 +31,9 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th class="text-center">Location</th>
-                        <th class="text-center">Details</th>
-                        <th class="text-center">Map</th>
+                        <th class="text-center">@local["Location"]</th>
+                        <th class="text-center">@local["Details"]</th>
+                        <th class="text-center">@local["Map"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,7 +73,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Total Branches</h5>
+                    <h5 class="card-title">@local["Total Branches"]</h5>
                     <p class="card-text">@Model.TotalBranch</p>
                 </div>
             </div>
@@ -74,7 +81,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Total Employees</h5>
+                    <h5 class="card-title">@local["Total Employees"]</h5>
                     <p class="card-text">@Model.TotalEmployee</p>
                 </div>
             </div>

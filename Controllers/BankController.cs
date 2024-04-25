@@ -1,4 +1,5 @@
 ﻿//using AspNetCore;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -47,6 +48,18 @@ namespace WebApplication2.Controllers
             }
             return View(branchlist);
         }
+
+        public IActionResult ChangeLanguage(string language = "en")
+        {
+            Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName
+                , CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(language))
+                , new CookieOptions { Expires = DateTime.Now.AddYears(1) });
+
+            return RedirectToAction("Index");
+        }
+
+
+
         public IActionResult Create(string LocationName)
         {
             List<BankBranches> branchlist = new List<BankBranches>()
@@ -101,7 +114,6 @@ namespace WebApplication2.Controllers
         //    return View("Create", model);
 
         //}
-
 
         [HttpGet]
         public IActionResult Register()
@@ -212,7 +224,7 @@ namespace WebApplication2.Controllers
                 bankBranches.Employees.Add(newEmployee);
 
                 db.SaveChanges();
-
+                
             }
             return View("Thanks");
         }
